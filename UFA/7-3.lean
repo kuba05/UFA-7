@@ -27,21 +27,75 @@ theorem seven_three [NormedAddCommGroup X] (space: InnerProductSpace Complex X)(
     simp 
     simp [hP]
 
-
+  
   have h_ortho2 : space.inner e x = 0 := by
     rw [inner_eq_zero_symm]
     assumption
 
-  have hh: e = 0:= by
+  have hh: e = 0 ∧ k = ‖k‖  := by
     rw [h_decomp] at h
     repeat rw [@norm_eq_sqrt_re_inner Complex ] at h
     simp only [inner_add_right, inner_add_left, inner_smul_left, inner_smul_right, h_ortho, h_ortho2] at h
-    ring_nf at h 
-    sorry
+    ring_nf at h
+    simp at h
+    set n_x := ‖ x‖
+    set n_e := ‖ e‖
+    have n_x_nonneg : n_x >= 0 := norm_nonneg x
+    set rk := k.re
+    set ik := k.im
+    have k_sq: Complex.normSq k = rk^2 + ik^2 := by
+      simp [Complex.normSq_eq_norm_sq, RCLike.norm_sq_eq_def (K := Complex), rk, ik, pow_two]
+    apply_fun (fun x => x^2) at h
+    simp only [Real.sq_sqrt', add_sq] at h
+    ring_nf at h
+    apply_fun (fun x => (x - max (↑n_x^2: Complex ).re 0)) at h
+    ring_nf at h
+    simp [←Complex.ofReal_pow, Complex.ofReal_re] at h
+    ring_nf at h
+    set X := n_x ^ 2 + n_x ^ 2 * rk * 2 + n_x ^ 2 * rk ^ 2 + n_x ^ 2 * ik ^ 2 + n_e ^ 2 with hX
+    set Y := n_x ^ 2 * rk ^ 2 + n_x ^ 2 * ik ^ 2 + n_e ^ 2 with hY
+    have hY_nonneg : 0 ≤ Y := by
+      rw [hY]
+      nlinarith
+    rw [max_eq_left hY_nonneg, max_eq_left (sq_nonneg n_x) ] at h
+    apply_fun (fun x => x- Y) at h
+    apply_fun (fun x => x^2) at h
+    ring_nf at h
+    rw [Real.sq_sqrt hY_nonneg] at h
+    by_cases hx_nonneg: X >= 0
+    rw [max_eq_left hx_nonneg] at h
+    repeat rw [Real.sqrt_sq n_x_nonneg] at h
+    rw [hX, hY] at h
+    apply_fun (fun x => x -n_x^4 * rk^2 * 4) at h
+    ring_nf at h
+    have h_pos1 : 0 ≤ n_x ^ 2 * n_e ^ 2 * 4 := by positivity
+    have h_pos2 : 0 ≤ n_x ^ 4 * ik ^ 2 * 4 := by positivity
+    symm at h
+    rw [add_eq_zero_iff_of_nonneg h_pos1 h_pos2] at h
+    obtain ⟨ a, b⟩ := h
+    have hh := by simpa [mul_eq_zero, n_x_nonneg] using a
+    cases hh with 
+      | inl h =>
+        dsimp[n_x] at h
+        rw [norm_eq_zero] at h
+        contradiction
+      | inr h =>
+        dsimp[n_e] at h
+        rw [norm_eq_zero] at h
+        have ik_zero: ik = 0 := by 
+          rw [mul_eq_zero
+        exact h
+    have a:  n_x ^ 2 + n_x ^ 2 * rk * 2 + n_x ^ 2 * rk ^ 2 + n_x ^ 2 * ik ^ 2 + n_e ^ 2  >= 0 := by
+      have h_factor : n_x ^ 2 + n_x ^ 2 * rk * 2 + n_x ^ 2 * rk ^ 2 + n_x ^ 2 * ik ^ 2 + n_e ^ 2 = 
+                  n_x^2 * (1 + rk)^2 + n_x^2 * ik^2 + n_e^2 := by ring
+      rw[h_factor]
+      positivity
+    rw [<-hX] at a
+    contradiction
+  
+  obtain ⟨ hh, hhh⟩ := hh
   rw [hh] at h_decomp
   simp at h_decomp
-  have hhh: k = ‖ k‖  := by
-    sorry
   use k.re
   have k_real : k = k.re := by
     apply Complex.ext
