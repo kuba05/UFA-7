@@ -32,7 +32,7 @@ theorem seven_three [NormedAddCommGroup X] (space: InnerProductSpace Complex X)(
     rw [inner_eq_zero_symm]
     assumption
 
-  have hh: e = 0 ∧ k = ‖k‖  := by
+  have hh: e = 0 ∧ k.im = 0  := by
     rw [h_decomp] at h
     repeat rw [@norm_eq_sqrt_re_inner Complex ] at h
     simp only [inner_add_right, inner_add_left, inner_smul_left, inner_smul_right, h_ortho, h_ortho2] at h
@@ -73,8 +73,12 @@ theorem seven_three [NormedAddCommGroup X] (space: InnerProductSpace Complex X)(
     symm at h
     rw [add_eq_zero_iff_of_nonneg h_pos1 h_pos2] at h
     obtain ⟨ a, b⟩ := h
-    have hh := by simpa [mul_eq_zero, n_x_nonneg] using a
-    cases hh with 
+    have ne_or_nx_is_zero := by simpa [mul_eq_zero, n_x_nonneg] using a
+    have ik_or_n_x_is_zero := by simpa [mul_eq_zero, n_x_nonneg] using b
+    --clear X Y hX hY hx_nonneg hY_nonneg
+   
+    constructor 
+    cases ne_or_nx_is_zero with 
       | inl h =>
         dsimp[n_x] at h
         rw [norm_eq_zero] at h
@@ -82,8 +86,14 @@ theorem seven_three [NormedAddCommGroup X] (space: InnerProductSpace Complex X)(
       | inr h =>
         dsimp[n_e] at h
         rw [norm_eq_zero] at h
-        have ik_zero: ik = 0 := by 
-          rw [mul_eq_zero
+        exact h
+
+    cases ik_or_n_x_is_zero with
+      | inl h =>
+        dsimp[n_x] at h
+        rw [norm_eq_zero] at h
+        contradiction
+      | inr h =>
         exact h
     have a:  n_x ^ 2 + n_x ^ 2 * rk * 2 + n_x ^ 2 * rk ^ 2 + n_x ^ 2 * ik ^ 2 + n_e ^ 2  >= 0 := by
       have h_factor : n_x ^ 2 + n_x ^ 2 * rk * 2 + n_x ^ 2 * rk ^ 2 + n_x ^ 2 * ik ^ 2 + n_e ^ 2 = 
@@ -92,27 +102,54 @@ theorem seven_three [NormedAddCommGroup X] (space: InnerProductSpace Complex X)(
       positivity
     rw [<-hX] at a
     contradiction
-  
-  obtain ⟨ hh, hhh⟩ := hh
-  rw [hh] at h_decomp
-  simp at h_decomp
-  use k.re
+
+  obtain ⟨ e_zero, k_im_zero ⟩ := hh
   have k_real : k = k.re := by
     apply Complex.ext
     simp
     simp
-    rw [hhh]
-    simp
-  apply And.intro
-  rw [hhh]
-  simp
-  by_contra k_zero
-  rw [k_zero] at h_decomp
+    exact k_im_zero
+  rw [e_zero] at h_decomp
   simp at h_decomp
-  contradiction
+  clear h_ortho h_ortho2 e_zero e
+  have k_non_neg : k.re >= 0:= by
+    rw [h_decomp] at h
+    nth_rewrite 1  [<- one_smul Complex x] at h
+    rw [<- add_smul] at h
+    repeat rw [norm_smul] at h
+    nth_rewrite 2 [← one_mul ‖x‖] at h
+    rw [<- add_mul] at h
+    have n_x_not_zero: ¬ ‖ x‖ = 0:= by
+      rw [norm_eq_zero]
+      exact x_ne_zero
+    apply mul_right_cancel₀ n_x_not_zero at h
 
+    
+    rw [k_real] at h
+    norm_cast at h
+    repeat rw [Real.norm_eq_abs] at h 
+    nth_rw 2 [<-abs_one] at h
+    rw [abs_add_eq_add_abs_iff] at h
+    cases h with
+      | inl h =>
+        rw [ge_iff_le]
+        exact h.right
+      | inr h =>
+        linarith
+
+  have k_pos : k.re > 0:= by
+    by_cases k_zero: k.re = 0
+    rw [k_real, k_zero] at h_decomp
+    simp at h_decomp
+    contradiction
+    exact Std.lt_of_le_of_ne k_non_neg fun a => k_zero (id (Eq.symm a))
+  
+  use k.re
+  apply And.intro
+  exact k_pos 
   rw [k_real] at h_decomp
-  assumption
+  exact h_decomp
+
 
 -- goal 2
   intro h
