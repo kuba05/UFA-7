@@ -45,7 +45,7 @@ theorem seven_three [NormedAddCommGroup X] (space: InnerProductSpace Complex X)(
     set ik := k.im
     have k_sq: Complex.normSq k = rk^2 + ik^2 := by
       simp [Complex.normSq_eq_norm_sq, RCLike.norm_sq_eq_def (K := Complex), rk, ik, pow_two]
-    apply_fun (fun x => x^2) at h
+    apply_fun (fun x => x^2) aikkkkkkkkkkkkkkkkkkkkkkkkkkkkjjt h
     simp only [Real.sq_sqrt', add_sq] at h
     ring_nf at h
     apply_fun (fun x => (x - max (↑n_x^2: Complex ).re 0)) at h
