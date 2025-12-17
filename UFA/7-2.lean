@@ -1,6 +1,6 @@
-import Mathlib
+import Mathlib.Data.Complex.Basic
 
-set_option diagnostics true
+import Mathlib.Analysis.InnerProductSpace.Basic
 
 theorem seven_two [NormedAddCommGroup X] (space: InnerProductSpace Complex X)(x y: X) : ¬(x = 0) -> (‖space.inner x y‖ = ‖x‖ *‖y‖ <-> ∃ α: Complex, y = α • x) := by
   intro x_not_zero

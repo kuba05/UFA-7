@@ -162,26 +162,3 @@ theorem sevenFive {V} [AddCommGroup V] (x: V) (Space: ComplexProdSpace V): ((y: 
   simp
   exact r
 
-
-
-
-
-  
-
-
-
-  
-
-
-  
-
-
-
-          
-
-
-        
-
-
-
-
