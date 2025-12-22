@@ -78,7 +78,7 @@ axiom CauchySwartzComplex {V}[AddCommGroup V] (Space: ComplexProdSpace V) (u v: 
 
 
 
-theorem sevenOne{V}[AddCommGroup V] (x y: V) (Space: InnerProdSpace Real V): (Space.inner (x+y) (x+y)  = Space.inner x x + Space.inner y y) <-> Space.inner x y = 0 := by
+theorem seven_one{V}[AddCommGroup V] (x y: V) (Space: InnerProdSpace Real V): (Space.inner (x+y) (x+y)  = Space.inner x x + Space.inner y y) <-> Space.inner x y = 0 := by
   constructor
   rw [Space.dot_add]
   rw [Space.dot_symm]
@@ -102,7 +102,7 @@ theorem sevenOne{V}[AddCommGroup V] (x y: V) (Space: InnerProdSpace Real V): (Sp
 
 
 
-theorem sevenFive {V} [AddCommGroup V] (x: V) (Space: ComplexProdSpace V): ((y: V) -> Space.norm y = 1 -> Space.norm x * Space.norm x >= Complex.normSq (Space.inner x y) ) ∧ ∃ y: V, Space.norm y = 1 -> Space.norm x = Space.inner x y := by
+theorem seven_five {V} [AddCommGroup V] (x: V) (Space: ComplexProdSpace V): ((y: V) -> Space.norm y = 1 -> Space.norm x * Space.norm x >= Complex.normSq (Space.inner x y) ) ∧ ∃ y: V, Space.norm y = 1 -> Space.norm x = Space.inner x y := by
   constructor
   intro y
   intro hy
