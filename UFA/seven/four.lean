@@ -2,7 +2,7 @@ import Mathlib.Data.Complex.Basic
 import Mathlib.Analysis.InnerProductSpace.Basic
 
 
-theorem seven_two [NormedAddCommGroup X] (space: InnerProductSpace Complex X)(x y: X) : (space.inner x y = 0) ↔ (a: Complex) -> ‖ x+a • y‖ = ‖ x - a • y‖ := by
+theorem seven_four [NormedAddCommGroup X] (space: InnerProductSpace Complex X)(x y: X) : (space.inner x y = 0) ↔ (a: Complex) -> ‖ x+a • y‖ = ‖ x - a • y‖ := by
   constructor
   {
     intro ort_1
